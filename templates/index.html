@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {{ bootstrap.load_css() }}
+    <title>Home</title>
+</head>
+<body>
+    <div class="top">
+            <h1>AMI_TEST</h1>
+            <a href="" class="btn btn-primary">Register</a>
+    </div>
+    <hr>
+    <h3>Users List</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fullname</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if users %}
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.fullname }} </td>
+                        <td>{{ user.phone }}  - <span id="{{user.phone}}" class="dialbtn btn btn-success">Dial</span></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    {{ bootstrap.load_js() }}
+</body>
+<script>
+    let dialers = document.querySelectorAll('.dialbtn')
+    
+    dialers.forEach((dialer)=>{
+        dialer.addEventListener('click', function(){
+            phone = dialer.id
+            $.post("call/"+phone, function (params) {
+                console.log(params)
+            })
+        })
+        
+    })
+</script>
+</html>
