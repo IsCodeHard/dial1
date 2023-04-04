@@ -1,5 +1,5 @@
 from flask_bootstrap import Bootstrap5
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 import pymysql.cursors
 from keys import *
 import asyncio
@@ -21,7 +21,6 @@ def callback_originate(events):
 @app.route('/')
 def home():
     with connection.cursor() as cursor:
-        # Read a single record
         sql = "SELECT * FROM `users`"
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -31,7 +30,6 @@ def home():
 @app.route('/call/<phone>', methods=['POST'])
 def dial(phone):
     with connection.cursor() as cursor:
-        # Read a single record
         sql = "SELECT * FROM `users` WHERE phone=%s"
         cursor.execute(sql, (phone,))
         result = cursor.fetchone()
@@ -54,6 +52,63 @@ def dial(phone):
             return f"Dial to {result['fullname']}"
         else:
             return "Invalid number"
+        
+@app.route('/register', methods=['GET','POST'])
+def register():
+    if request.method == 'POST':
+        data = request.form
+
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `users` WHERE phone=%s"
+            cursor.execute(sql, (data['phone'],))
+            result = cursor.fetchone()
+            
+            if not result:
+                sql = "INSERT INTO users(fullname,phone) VALUES (%s,%s)"
+                cursor.execute(sql, (data['fullname'],data['phone']))
+                connection.commit()
+                return "success"
+            else:
+                return "user phone already exist"
+    return render_template('register.html')
+
+@app.route('/delete/<phone>', methods=['POST'])
+def delete(phone):
+    if request.method == 'POST':
+        data = request.form
+
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `users` WHERE phone=%s"
+            cursor.execute(sql, (phone,))
+            result = cursor.fetchone()
+            
+            if result:
+                sql = "DELETE FROM `users` WHERE phone=%s"
+                cursor.execute(sql, (phone,))
+                connection.commit()
+                return "success"
+            else:
+                return "error: User does'nt exist"
+            
+
+@app.route('/edit/<phone>', methods=['GET','POST'])
+def edit():
+    if request.method == 'POST':
+        data = request.form
+
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `users` WHERE phone=%s"
+            cursor.execute(sql, (data['phone'],))
+            result = cursor.fetchone()
+            
+            if not result:
+                sql = "INSERT INTO users(fullname,phone) VALUES (%s,%s)"
+                cursor.execute(sql, (data['fullname'],data['phone']))
+                connection.commit()
+                return "success"
+            else:
+                return "user phone already exist"
+    return render_template('register.html')
 
 if __name__ == '__main__':
     app.run()    

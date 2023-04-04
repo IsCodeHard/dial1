@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {{ bootstrap.load_css() }}
+    <title>Home</title>
+</head>
+<body>
+    <div class="top">
+            <h1>AMI_TEST</h1>
+            <a href="{{url_for('home')}}" class="btn btn-secondary">Back</a>
+    </div>
+    <hr>
+    <div class="container">
+        <h3>Users Registration</h3>
+    <form class="form" action="" method="post" id="myForm">
+        <div class="form-group">
+            <label for="" class="form-label">Fullname</label>
+            <input type="text" name="fullname" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="" class="form-label">Phone</label>
+            <input type="tel" name="phone" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary" id="btnS">Register</button>
+    </form>
+    </div>
+    
+    {{ bootstrap.load_js() }}
+</body>
+<script>
+    let form = document.querySelector('#myForm')
+    let btn = document.querySelector('#btnS')
+    var obj = {};
+	
+    btn.addEventListener('click', function(e){
+        e.preventDefault();
+
+        var formData = new FormData(form);
+        for (var key of formData.keys()) {
+            obj[key] = formData.get(key);
+        }
+        
+        console.log(formData, obj)
+        $.post('register', obj, function(result){
+            console.log(result)
+        })
+        
+    })
+    
+</script>
+</html>

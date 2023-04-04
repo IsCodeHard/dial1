@@ -11,7 +11,7 @@
 <body>
     <div class="top">
             <h1>AMI_TEST</h1>
-            <a href="" class="btn btn-primary">Register</a>
+            <a href="{{url_for('register')}}" class="btn btn-primary">Register</a>
     </div>
     <hr>
     <h3>Users List</h3>
@@ -29,7 +29,7 @@
                     <tr>
                         <td>{{ user.id }}</td>
                         <td>{{ user.fullname }} </td>
-                        <td>{{ user.phone }}  - <span id="{{user.phone}}" class="dialbtn btn btn-success">Dial</span></td>
+                        <td>{{ user.phone }}  - <span id="{{user.phone}}" class="dialbtn btn btn-success">Dial</span><span id="{{user.phone}}" class="delbtn btn btn-danger">Del</span></td>
                     </tr>
                 {% endfor %}
             {% endif %}
@@ -39,12 +39,23 @@
 </body>
 <script>
     let dialers = document.querySelectorAll('.dialbtn')
+    let deletes = document.querySelectorAll('.delbtn')
     
     dialers.forEach((dialer)=>{
         dialer.addEventListener('click', function(){
             phone = dialer.id
             $.post("call/"+phone, function (params) {
                 console.log(params)
+            })
+        })
+        
+    });
+
+    deletes.forEach((del)=>{
+        del.addEventListener('click', function(){
+            phone = del.id
+            $.post("delete/"+phone, function (params) {
+                window.location.reload()
             })
         })
         
